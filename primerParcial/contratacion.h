@@ -29,6 +29,5 @@ int cont_BorrarContratacion(sContratacion listaContrataciones[], int id,int limi
 //void cont_graficoBarras(int cont18,int cont19a35,int cont35);
 //void cont_ordenar_x_Hora(sContratacion listaContrataciones[],int limite);
 int cont_BuscarChar(sContratacion listaContrataciones[],int len, char texto[]);
-
 int cont_buscarIndexPorId(sContratacion listaContrataciones[],int len,int id);
 int cont_modificarContratacion(sContratacion listaContrataciones[], sPantalla listaPantallas[],  int lenContratacion,int lenPantalla, int id );

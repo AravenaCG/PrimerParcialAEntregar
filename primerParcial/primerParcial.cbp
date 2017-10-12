@@ -46,6 +46,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="pantalla.h" />
+		<Unit filename="scliente.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="scliente.h" />
 		<Unit filename="validar.c">
 			<Option compilerVar="CC" />
 		</Unit>

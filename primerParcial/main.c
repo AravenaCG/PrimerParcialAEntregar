@@ -6,9 +6,10 @@
 #include "contratacion.h"
 #include "validar.h"
 #include "informes.h"
+#include "scliente.h"
 #define LEN_PANTALLA  50
 #define LEN_CONTRATACION 50
-
+#define LEN_CLIENTES 50
 
 int main()
 {
@@ -30,6 +31,8 @@ int main()
     sContratacion listaCOntrataciones[LEN_CONTRATACION];
     pant_InitLista(listaPantallas, LEN_PANTALLA);
     cont_InitLista(listaCOntrataciones,LEN_CONTRATACION);
+    sCliente listaClientes[LEN_CLIENTES];
+    cliente_InitLista(listaClientes,LEN_CLIENTES);
 
     do
     {
@@ -60,6 +63,7 @@ int main()
 
         case 4:
            info_PrintPantallas(listaPantallas,LEN_PANTALLA);
+           pause("PRESIONE CUALQUIER TECLA PARA CONTINUAR");
            val_getUnsignedInt(bEleccionPantalla,"\nIngrese la pantalla seleccionada:\n","ERROR!",3,50);
            eleccionPantalla= atoi(bEleccionPantalla);
            if (pant_buscarIndexPorId(listaPantallas,LEN_PANTALLA, eleccionPantalla)!= -1)
@@ -93,6 +97,8 @@ int main()
             info_PrintPantallas(listaPantallas,LEN_PANTALLA);
             break;
         case 10:
+            info_CrearLista_Clientes_Por_Cuit(listaCOntrataciones,LEN_CONTRATACION,listaClientes,LEN_CLIENTES);
+            info_ListarClientesYSusMontosSegunCuit(listaCOntrataciones,listaPantallas,listaClientes,LEN_CLIENTES,LEN_CONTRATACION,LEN_PANTALLA);
 
             break;
         }

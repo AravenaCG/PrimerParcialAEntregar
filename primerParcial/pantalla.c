@@ -107,7 +107,7 @@ int pant_AgregarPantalla(sPantalla listaPantallas[], int index, int limite)
             if  (val_getDireccion(bDireccion,"\nDireccion PANTALLA?:\n","\nError:\n",3,50)==0 )
             {
                 getStringNumerosFlotantes("\ningrese el precio de la publicacion: \n",bPrecio);
-                val_getUnsignedInt(bTipoPantalla,"\n Ingrese el tipo de pantalla: \n1) LED \n 2)LCD\n","Error",3,20);
+                val_getUnsignedInt(bTipoPantalla,"\n Ingrese el tipo de pantalla: \n1)LED \n 2)LCD\n","Error",3,20);
                 precio= atof(bPrecio);
                 strncpy(listaPantallas[index].nombre,bNombre,50);
                 strncpy(listaPantallas[index].direccion,bDireccion,50);
@@ -164,7 +164,7 @@ int pant_buscarIndexPorId(sPantalla listaPantallas[],int len,int id)
 {
     int i;
     int retorno=-1;
-    if (listaPantallas != NULL && len >0 && id >0 )
+    if (listaPantallas != NULL && len >0 && id >=0 )
     {
         for (i=0; i<len; i++)
         {

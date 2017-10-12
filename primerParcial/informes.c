@@ -7,48 +7,6 @@
 #include "validar.h"
 #include "informes.h"
 
-/** \brief idAutoincrementable
- *
- * \param array listaCliente recibe puntero al inicio del array
- * \param len es la cantidad de elementos del array
- * \return retorna el ultimo valor para utilizar en Id
- *
- */
-
-int cliente_generar_Proximo_Id(sCliente listaClientes[], int len)
-{
-    static int ultimoValorIdAutoincrementable = -1;
-    ultimoValorIdAutoincrementable ++;
-    return ultimoValorIdAutoincrementable;
-
-}
-
-
-/** \brief Inicializa la lista
- *
- * \param array listaClientes recibe puntero al inicio del array
- * \param limite es la cantidad de elementos del array
- * \return retorno : -1 (error) ; 0 (funciona correctamente)
- *
- */
-
-int cliente_InitLista(sCliente listaClientes[], int limite)
-{
-    int retorno = -1;
-    int i;
-
-    if( listaClientes != NULL && limite > 0)
-    {
-        for(i=0; i<limite ; i++)
-        {
-            listaClientes[i].flag_ocupado = INDICE_LIBRE;
-            retorno=0;
-        }
-
-    }
-
-    return retorno;
-}
 /** \brief imprime la estructura
  *
  * \param listaPantallas es el array
@@ -61,6 +19,7 @@ int info_PrintPantallas(sPantalla listaPantallas[], int limite)
 {
     int retorno = -1;
     int i;
+
     if(listaPantallas != NULL && limite > 0)
     {
         printf("*************************************************************\n");
@@ -70,7 +29,20 @@ int info_PrintPantallas(sPantalla listaPantallas[], int limite)
         {
             if(listaPantallas[i].flag_ocupado == INDICE_OCUPADO)
             {
-                printf("\n-ID PANTALLA:\n%d\n\nDIRECCION:\n%s\n\nPRECIO:\n%.2f\n\n ",listaPantallas[i].idPantalla, listaPantallas[i].direccion,listaPantallas[i].precio);
+                printf("*************************************************************\n");
+                printf("\n* ID PANTALLA:%d\n* DIRECCION:%s\n* PRECIO:%.2f\n",
+                       listaPantallas[i].idPantalla,
+                       listaPantallas[i].direccion,
+                       listaPantallas[i].precio);
+                if(listaPantallas[i].tipoPantalla == 1)
+                {
+                    printf( "\n* TIPO DE PANTALLA: LED\n");
+                }
+                else
+                {
+                    printf( "\n* TIPO DE PANTALLA: LCD\n");
+                }
+                printf("*************************************************************\n");
             }
         }
 
@@ -129,7 +101,13 @@ int info_PrintContrataciones(sContratacion listaContrataciones[], int limite)
             if(listaContrataciones[i].flag_ocupado == INDICE_OCUPADO)
             {
                 retorno=0;
-                printf("\n- ID CONTRATACION: \n%d\n DIAS:\n %d \n CUIT CLIENTE:\n%s\n NOMBRE DE ARCHIVO:\n %s\n ID PANTALLA RELACIONADA:\n %d \n",listaContrataciones[i].idContratacion, listaContrataciones[i].dias,listaContrataciones[i].cuitCliente,listaContrataciones[i].archivo,listaContrataciones[i].idPantallaRelacion );
+                printf("*************************************************************\n");
+                printf("* CUIT CLIENTE:%s \n* ID CONTRATACION:%d\n* DIAS:%d\n* NOMBRE DE ARCHIVO:%s\n* ID PANTALLA RELACIONADA:%d\n",listaContrataciones[i].cuitCliente,
+                       listaContrataciones[i].idContratacion,
+                       listaContrataciones[i].dias,
+                       listaContrataciones[i].archivo,
+                       listaContrataciones[i].idPantallaRelacion);
+                printf("*************************************************************\n");
             }
         }
 
@@ -161,16 +139,17 @@ int info_CalcularMontoSegunCuit(sContratacion listaContrataciones[],sPantalla li
         if(listaPantallas != NULL && lenPantallas > 0)
         {
 
-
-            printf("CLIENTE:%s",bCUIT);
+            printf("*************************************************************\n");
+            printf("*                      CLIENTE:%s              *",bCUIT);
             for (i=0; i<lenContrataciones; i++)
             {
                 if(strcmp(listaContrataciones[i].cuitCliente,bCUIT)== 0)
                 {
                     indexPantalla = listaContrataciones[i].idPantallaRelacion;
                     monto = listaContrataciones[i].dias * listaPantallas[indexPantalla].precio;
-                    printf("LA CONTRATACION: \n %d \n TIENE POR MONTO: \n %.2f\n ", listaContrataciones[i].idContratacion,monto);
+                    printf("* LA CONTRATACION: %d \n* TIENE POR MONTO:%.2f\n ", listaContrataciones[i].idContratacion,monto);
                     retorno=0;
+                    printf("*************************************************************\n");
                 }
             }
 
@@ -181,66 +160,144 @@ int info_CalcularMontoSegunCuit(sContratacion listaContrataciones[],sPantalla li
     return retorno;
 }
 
-/** \brief
+/** \brief compara los Cuit de las contrataciones creando una listaClientes segun el CUIT sin que se repitan
  *
- * \param
- * \param
- * \return
+ * \param listaContrataciones es la lista de la estructura Contrataciones de la cual se encuentran los diferentes CUITS ingresados ya validados previamente
+ * \param lenContrataciones es la dimension del array de contrataciones
+ * \param listaClientes es la lista de la estructura Cliente donde se guardan los campos cuando se encuentra un CUIT nuevo o una Contratacion que pertenece a un CUIT ya existente
+ * \param lenClientes es la dimension del array de clientes
+ * \return -1 si no funciona. 0 si esta todo ok.
  *
  */
 
-
-int info_ContratacionesPorClienteyMonto(sContratacion listaContrataciones[],sPantalla listaPantallas[], int lenContrataciones,int lenPantallas)
+int info_CrearLista_Clientes_Por_Cuit(sContratacion listaContrataciones[],int lenContrataciones,sCliente listaClientes[],int lenClientes)
 {
-    sCliente listaClientes[LEN_CLIENTES];
-    cliente_InitLista(listaClientes,LEN_CLIENTES);
-    int i;
-    //int acumulador;
-    // int maximo;
-    int j=1;
-    int k;
-    int pos;
     int retorno=-1;
-    if(listaClientes != NULL && listaContrataciones != NULL && listaPantallas != NULL)
+    int i;
+    int j;
+    int k;
+    char buffCuit[50];
+    int buffPosicion;
+    int nuevaPosicion;
+    int flag_existe;
+    int idContratacionRelacion;
+    int posicion_Array_idContrataciones=-1;
+    for (i=0; i<lenContrataciones;i++)
     {
-        listaClientes[0].idCliente = cliente_generar_Proximo_Id(listaClientes,LEN_CLIENTES);
-        //igualo el primer elemento
-        strcpy(listaClientes[0].cuit,listaContrataciones[0].cuitCliente);
-        //para recorrer clientes
-        for (i=0; i<LEN_CLIENTES; i++)
+        strcpy(buffCuit,listaContrataciones[i].cuitCliente);
+        for (j=0;j<lenContrataciones;j++)
         {
-            //para recorrer contrataciones
-            for(j=0; j<lenContrataciones; j++)
-            {
-                //si los elementos son iguales
-                if (strcmp(listaClientes[i].cuit,listaContrataciones[j].cuitCliente)==0)
-                {
-                    //suma una posicion en el v de contrataciones para ese cliente
-                    pos++;
-                    //copia el idContratacion en el array del cliente
-                    listaClientes[i].idContrataciones[pos][50]=listaContrataciones[j].idContratacion;
-                    //sigue recorriendo la lista contrataciones
-
-                }
-                else if (strcmp(listaClientes[i].cuit,listaContrataciones[j].cuitCliente)!= 0)
-                {
-                    listaClientes[j].idCliente= cliente_generar_Proximo_Id(listaClientes,LEN_CLIENTES);
-                    strcpy(listaClientes[j].cuit,listaContrataciones[j].cuitCliente);
-
-                }
-            }
-        }
-
-
-//        maximo= listaClientes[0].saldo;
-
-        for (k=0; k<lenContrataciones; k++)
-        {
-            info_CalcularMontoSegunCuit(listaContrataciones,listaPantallas,lenContrataciones,lenPantallas,listaClientes[k].cuit);
+          if (strcmp(buffCuit,listaContrataciones[j].cuitCliente)!=0)
+          {
+              idContratacionRelacion=j;
+              for (k=0;k<lenClientes;k++)
+              {
+                  if (strcmp(buffCuit,listaClientes[k].cuit)!=0)
+                    {
+                        flag_existe=1;
+                        buffPosicion=k;
+                        break;
+                    }
+                    else
+                    {
+                        nuevaPosicion=cliente_obtenerEspacioLibre(listaClientes,lenClientes);
+                        listaClientes[nuevaPosicion].idCliente = cliente_generar_Proximo_Id(listaClientes,lenClientes);
+                        listaClientes[nuevaPosicion].flag_ocupado = INDICE_OCUPADO;
+                        strcpy(listaClientes[nuevaPosicion].cuit,buffCuit);
+                        listaClientes[nuevaPosicion].idContrataciones[posicion_Array_idContrataciones+1]=idContratacionRelacion;
+                    }
+              }
+              if (flag_existe==1)
+              {
+                  listaClientes[buffPosicion].idContrataciones[posicion_Array_idContrataciones+1]=idContratacionRelacion;
+              }
+          }
+          else
+          {
+              printf("El CUIT:%s no tiene Contrataciones Activas",buffCuit);
+          }
 
         }
-        retorno=0;
     }
     return retorno;
 }
 
+
+
+/** \brief lista todas las contrataciones por Cliente segun el cuit para ver si tiene contrataciones activas
+ *
+ * \param lenContrataciones es la dimension del array de contrataciones
+ * \param listaClientes es la lista de la estructura Cliente donde se guardan los campos cuando se encuentra un CUIT nuevo o una Contratacion que pertenece a un CUIT ya existente
+ * \param lenClientes es la dimension del array de clientes
+  * @param  listaPantallas el array donde busca
+ * @param  lenPantallas cantidad de elementos en el array
+ * \return -1 si no funciona. 0 si esta todo ok.
+ *
+ */
+
+int info_ListarClientesYSusMontosSegunCuit(sContratacion listaContrataciones[],sPantalla listaPantallas[],sCliente listaClientes[], int lenClientes, int lenContrataciones,int lenPantallas)
+{
+    int retorno=-1;
+    int indexMaximo=0;
+    int indexPantalla;
+    int i;
+    int j;
+    int k;
+    float maximo=-1;
+    float acumulador=0;
+    float monto;
+
+    if(listaContrataciones != NULL && lenContrataciones > 0)
+    {
+        if(listaPantallas != NULL && lenPantallas > 0)
+        {
+            if (listaClientes != NULL && lenClientes >0)
+            {
+
+
+                printf("*************************************************************\n");
+
+                for (i=0; i<lenClientes; i++)
+                {
+                    printf("*                      CLIENTE:%s              *",listaClientes[i].cuit);
+
+                    for (j=0; j<lenContrataciones; j++)
+                    {
+                        if(strcmp(listaContrataciones[j].cuitCliente,listaClientes[i].cuit)== 0)
+                        {
+                            indexPantalla = listaContrataciones[j].idPantallaRelacion;
+                            monto = listaContrataciones[j].dias * listaPantallas[indexPantalla].precio;
+                            printf("* LA CONTRATACION: %d \n* TIENE POR MONTO:%.2f\n ", listaContrataciones[i].idContratacion,monto);
+                            retorno=0;
+
+                            acumulador=acumulador + monto;
+
+                        }
+                         listaClientes[i].saldoTotal= acumulador;
+                    }
+                        printf("EL SALDO TOTAL DEL CLIENTE %s ES :%.2f" ,listaClientes[i].cuit,listaClientes[i].saldoTotal);
+                        printf("*************************************************************\n");
+                        printf("*************************************************************\n");
+
+                }
+
+                for (k=0;k<lenClientes;k++)
+                {
+                    if (listaClientes[k].saldoTotal>maximo)
+                    {
+                        maximo= listaClientes[k].saldoTotal;
+                        indexMaximo = k;
+
+                    }
+                }
+                        printf("EL Cliente con mas Deuda es: %s \n Con un monto total de: %.2f ", listaClientes[indexMaximo].cuit, maximo);
+            }
+
+
+
+        }
+
+
+    }
+    return retorno;
+}

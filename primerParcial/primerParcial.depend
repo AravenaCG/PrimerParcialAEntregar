@@ -116,3 +116,78 @@
 	<time.h>
 	"validar.h"
 
+1507793201 source:c:\users\hunter\desktop\primerparcialaentregar\primerparcial\contratacion.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"validar.h"
+	"contratacion.h"
+	"pantalla.h"
+	"informes.h"
+
+1507748108 c:\users\hunter\desktop\primerparcialaentregar\primerparcial\validar.h
+
+1507819994 c:\users\hunter\desktop\primerparcialaentregar\primerparcial\contratacion.h
+	"pantalla.h"
+	"validar.h"
+
+1507761759 c:\users\hunter\desktop\primerparcialaentregar\primerparcial\pantalla.h
+
+1507829128 c:\users\hunter\desktop\primerparcialaentregar\primerparcial\informes.h
+	"pantalla.h"
+	"contratacion.h"
+	"validar.h"
+	"scliente.h"
+
+1507828282 source:c:\users\hunter\desktop\primerparcialaentregar\primerparcial\informes.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"pantalla.h"
+	"contratacion.h"
+	"validar.h"
+	"informes.h"
+
+1507829128 source:c:\users\hunter\desktop\primerparcialaentregar\primerparcial\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"pantalla.h"
+	"contratacion.h"
+	"validar.h"
+	"informes.h"
+	"scliente.h"
+
+1507820718 source:c:\users\hunter\desktop\primerparcialaentregar\primerparcial\pantalla.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"validar.h"
+	"pantalla.h"
+	"contratacion.h"
+	"informes.h"
+
+1507792682 source:c:\users\hunter\desktop\primerparcialaentregar\primerparcial\validar.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"validar.h"
+
+1507824301 c:\users\hunter\desktop\primerparcialaentregar\primerparcial\scliente.h
+
+1507822836 source:c:\users\hunter\desktop\primerparcialaentregar\primerparcial\scliente.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"validar.h"
+	"pantalla.h"
+	"contratacion.h"
+	"informes.h"
+	"scliente.h"
+
